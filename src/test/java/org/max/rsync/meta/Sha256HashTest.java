@@ -47,14 +47,14 @@ public class Sha256HashTest {
     public void hashForNullDataShouldFail() {
         Sha256Hash calc = new Sha256Hash();
         Throwable ex = assertThrows(NullPointerException.class, () -> calc.sha256AsHex(null));
-        assertEquals("Can't calculate SHA hash from null 'data' array", ex.getMessage());
+        assertEquals("Can't calculate SHA rollingHash from null 'data' array", ex.getMessage());
     }
 
     @Test
     public void checkHashConsistent() {
         Sha256Hash calc = new Sha256Hash();
-        String hash1 = calc.sha256AsHex("check hash consistent".getBytes(StandardCharsets.UTF_8));
-        String hash2 = calc.sha256AsHex("check hash consistent".getBytes(StandardCharsets.UTF_8));
+        String hash1 = calc.sha256AsHex("check rollingHash consistent".getBytes(StandardCharsets.UTF_8));
+        String hash2 = calc.sha256AsHex("check rollingHash consistent".getBytes(StandardCharsets.UTF_8));
         assertEquals(hash1, hash2);
     }
 

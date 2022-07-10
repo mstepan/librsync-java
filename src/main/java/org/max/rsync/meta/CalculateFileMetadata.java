@@ -16,7 +16,7 @@ public class CalculateFileMetadata {
     }
 
     // TODO: temporary set for 128 bytes, should be something like 1MB
-    private static final int CHUNK_SIZE_IN_BYTES = 128;
+    public static final int CHUNK_SIZE_IN_BYTES = 10;
 
     public FileMeta calculate(InputStream in) {
 
@@ -25,10 +25,12 @@ public class CalculateFileMetadata {
         final byte[] buf = new byte[CHUNK_SIZE_IN_BYTES];
 
         int readBytes;
+        int id = 0;
 
         try {
             while ((readBytes = in.read(buf)) != -1) {
-                chunkMetas.add(calculateChunkMetadata(buf, readBytes));
+                chunkMetas.add(calculateChunkMetadata(id, buf, readBytes));
+                ++id;
             }
         }
         catch (IOException ioEx) {
@@ -37,11 +39,11 @@ public class CalculateFileMetadata {
         return new FileMeta(chunkMetas);
     }
 
-    private ChunkMeta calculateChunkMetadata(byte[] buf, int length) {
+    private ChunkMeta calculateChunkMetadata(int id, byte[] buf, int length) {
         int weakHash = rollingHash.rollingHash(buf, length);
         String strongHash = this.sha256Hash.sha256AsHex(buf, length);
 
-        return new ChunkMeta(weakHash, strongHash);
+        return new ChunkMeta(id, weakHash, strongHash);
     }
 
 

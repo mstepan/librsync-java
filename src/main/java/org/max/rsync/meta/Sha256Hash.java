@@ -23,7 +23,7 @@ public final class Sha256Hash {
     }
 
     public String sha256AsHex(byte[] data, int length) {
-        Objects.requireNonNull(data, "Can't calculate SHA hash from null 'data' array");
+        Objects.requireNonNull(data, "Can't calculate SHA rollingHash from null 'data' array");
 
         messageDigest.update(data, 0, length);
 
@@ -32,7 +32,7 @@ public final class Sha256Hash {
     }
 
     public String sha256AsHex(byte[] data) {
-        Objects.requireNonNull(data, "Can't calculate SHA hash from null 'data' array");
+        Objects.requireNonNull(data, "Can't calculate SHA rollingHash from null 'data' array");
         return sha256AsHex(data, data.length);
     }
 
