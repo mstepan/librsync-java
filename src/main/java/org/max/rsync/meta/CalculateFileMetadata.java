@@ -20,11 +20,11 @@ public class CalculateFileMetadata {
 
     public FileMeta calculate(InputStream in) {
 
-        List<ChunkMeta> chunkMetas = new ArrayList<>();
+        final List<ChunkMeta> chunkMetas = new ArrayList<>();
 
-        byte[] buf = new byte[CHUNK_SIZE_IN_BYTES];
+        final byte[] buf = new byte[CHUNK_SIZE_IN_BYTES];
 
-        int readBytes = -1;
+        int readBytes;
 
         try {
             while ((readBytes = in.read(buf)) != -1) {
