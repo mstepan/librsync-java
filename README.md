@@ -1,7 +1,7 @@
-# java 15 template project
+# rsync library for java
 
 Use the following:
-* java 15 (set through jenv, check `.java-version` file)
+* java 17 (set through jenv, check `.java-version` file)
 * maven wrapper with maven 3.6.3
 
 ## Unit tests.

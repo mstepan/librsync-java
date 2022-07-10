@@ -33,9 +33,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.plugin.version}</version>
-                <configuration>
-                    <argLine>--enable-preview</argLine>
-                </configuration>
             </plugin>
 
         </plugins>
@@ -54,13 +51,6 @@
     </dependencyManagement>
 
     <dependencies>
-
-        <!-- DB access: postgresql JDBC driver, hikary connection pool, JDBI  -->
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.4.0</version>
-        </dependency>
 
         <!-- Test dependencies -->
         <dependency>
