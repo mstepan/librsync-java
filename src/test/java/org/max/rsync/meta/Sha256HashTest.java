@@ -14,6 +14,16 @@ public class Sha256HashTest {
         assertEquals("B94D27B9934D3E08A52E52D7DA7DABFAC484EFE37A5380EE9088F7ACE2EFCDE9", actualHash);
     }
 
+    /**
+     * <a href="https://www.movable-type.co.uk/scripts/sha256.html">Use this link to check you SHA256 hashes</a>
+     */
+    @Test
+    public void hashPredefinedData() {
+        Sha256Hash calc = new Sha256Hash();
+        String actualHash = calc.sha256AsHex("some arbitrary length string".getBytes(StandardCharsets.UTF_8));
+        assertEquals("b1cf0304a6c115e9befac49ca6e78f26a690fd2cf36a9203734c6c611bf042e1".toUpperCase(), actualHash);
+    }
+
     @Test
     public void hashEmptyArrayShouldBeOk() {
         Sha256Hash calc = new Sha256Hash();
