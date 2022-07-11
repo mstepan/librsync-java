@@ -11,14 +11,14 @@ import org.max.rsync.meta.MetadataCalculator;
 import org.max.rsync.meta.ChunkMeta;
 import org.max.rsync.meta.FileMeta;
 import org.max.rsync.meta.RollingHash;
-import org.max.rsync.meta.Sha256Hash;
+import org.max.rsync.meta.StrongHash;
 
 public class DiffCalculator {
 
     private final RollingHash rollingHashCalculator;
-    private final Sha256Hash strongHashCalculator;
+    private final StrongHash strongHashCalculator;
 
-    public DiffCalculator(RollingHash rollingHashCalculator, Sha256Hash strongHashCalculator) {
+    public DiffCalculator(RollingHash rollingHashCalculator, StrongHash strongHashCalculator) {
         this.rollingHashCalculator = Objects.requireNonNull(rollingHashCalculator);
         this.strongHashCalculator = Objects.requireNonNull(strongHashCalculator);
     }
@@ -100,7 +100,7 @@ public class DiffCalculator {
             return -1;
         }
 
-        if (curMeta.strongHash().equals(strongHashCalculator.sha256AsHex(window, readBytes))) {
+        if (curMeta.strongHash().equals(strongHashCalculator.hash(window, readBytes))) {
             return curMeta.id();
         }
 

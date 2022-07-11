@@ -11,11 +11,11 @@ public class MetadataCalculator {
     public static final int CHUNK_SIZE_IN_BYTES = 128;
 
     private final RollingHash rollingHash;
-    private final Sha256Hash sha256Hash;
+    private final StrongHash strongHash;
 
-    public MetadataCalculator(RollingHash rollingHash, Sha256Hash sha256Hash) {
+    public MetadataCalculator(RollingHash rollingHash, StrongHash strongHash) {
         this.rollingHash = rollingHash;
-        this.sha256Hash = sha256Hash;
+        this.strongHash = strongHash;
     }
 
     public FileMeta calculate(InputStream in) {
@@ -41,7 +41,7 @@ public class MetadataCalculator {
 
     private ChunkMeta calculateChunkMetadata(int id, byte[] buf, int length) {
         int weakHash = rollingHash.rollingHash(buf, length);
-        String strongHash = this.sha256Hash.sha256AsHex(buf, length);
+        String strongHash = this.strongHash.hash(buf, length);
 
         return new ChunkMeta(id, weakHash, strongHash);
     }

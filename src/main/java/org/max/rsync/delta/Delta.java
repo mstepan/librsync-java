@@ -5,12 +5,20 @@ import java.util.List;
 
 public record Delta(List<DeltaChunk> diff) {
 
-    Delta(){
+    Delta() {
         this(new ArrayList<>());
     }
 
     public void addNewByte(byte newByte) {
-        diff.add(new NewData((char) newByte));
+
+        DeltaChunk lastChunk = (diff.isEmpty()) ? null : diff.get(diff.size() - 1);
+
+        if( lastChunk instanceof NewData newData){
+            newData.append(newByte);
+        }
+        else {
+            diff.add(new NewData(newByte));
+        }
     }
 
     public void addExistingChunk(int chunkId) {
@@ -24,6 +32,21 @@ public record Delta(List<DeltaChunk> diff) {
     public record ExistingChunk(int id) implements DeltaChunk {
     }
 
-    public record NewData(char ch) implements DeltaChunk {
+    public static final class NewData implements DeltaChunk {
+
+        private final ByteArray rawData = new ByteArray();
+
+        public NewData(byte newByte) {
+            rawData.append(newByte);
+        }
+
+        public ByteArray getRawData() {
+            return rawData;
+        }
+
+        void append(byte newByte){
+            rawData.append(newByte);
+        }
+
     }
 }

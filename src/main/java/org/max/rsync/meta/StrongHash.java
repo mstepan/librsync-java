@@ -1,28 +1,30 @@
 package org.max.rsync.meta;
 
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
-public final class Sha256Hash {
+public final class StrongHash {
 
     private static final char[] HEX_CHARS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
     private static final String SHA_ALGORITHM = "SHA-256";
 
+    /**
+     * MessageDigest is not thread safe, so should be used as a separate field.
+     */
     private final MessageDigest messageDigest;
 
-    public Sha256Hash() {
+    public StrongHash() {
         try {
-            messageDigest = MessageDigest.getInstance("SHA-256");
+            messageDigest = MessageDigest.getInstance(SHA_ALGORITHM);
         }
         catch (NoSuchAlgorithmException ex) {
             throw new ExceptionInInitializerError("Can't create message digest for " + SHA_ALGORITHM + ": " + ex.getMessage());
         }
     }
 
-    public String sha256AsHex(byte[] data, int length) {
+    public String hash(byte[] data, int length) {
         Objects.requireNonNull(data, "Can't calculate SHA rollingHash from null 'data' array");
 
         messageDigest.update(data, 0, length);
@@ -31,9 +33,9 @@ public final class Sha256Hash {
         return toHex(digest);
     }
 
-    public String sha256AsHex(byte[] data) {
+    public String hash(byte[] data) {
         Objects.requireNonNull(data, "Can't calculate SHA rollingHash from null 'data' array");
-        return sha256AsHex(data, data.length);
+        return hash(data, data.length);
     }
 
     private static String toHex(byte[] digest) {
@@ -48,11 +50,4 @@ public final class Sha256Hash {
 
         return buf.toString();
     }
-
-    public static void main(String[] args) {
-        Sha256Hash calc = new Sha256Hash();
-        String res = calc.sha256AsHex("hello world".getBytes(StandardCharsets.UTF_8));
-        System.out.println(res);
-    }
-
 }

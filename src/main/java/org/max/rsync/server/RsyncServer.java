@@ -11,19 +11,20 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import org.max.rsync.delta.ByteArray;
 import org.max.rsync.delta.Delta;
 import org.max.rsync.delta.DiffCalculator;
 import org.max.rsync.io.IOUtils;
 import org.max.rsync.meta.FileMeta;
 import org.max.rsync.meta.MetadataCalculator;
 import org.max.rsync.meta.RollingHash;
-import org.max.rsync.meta.Sha256Hash;
+import org.max.rsync.meta.StrongHash;
 
 public class RsyncServer {
 
-    private final MetadataCalculator metadataCalculator = new MetadataCalculator(new RollingHash(), new Sha256Hash());
+    private final MetadataCalculator metadataCalculator = new MetadataCalculator(new RollingHash(), new StrongHash());
 
-    private final DiffCalculator diffCalculator = new DiffCalculator(new RollingHash(), new Sha256Hash());
+    private final DiffCalculator diffCalculator = new DiffCalculator(new RollingHash(), new StrongHash());
 
     public void sync(Path inFolder, Path outFolder) throws IOException {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(inFolder)) {
@@ -81,7 +82,8 @@ public class RsyncServer {
 
                 for (Delta.DeltaChunk singleChange : delta.diff()) {
                     if (singleChange instanceof Delta.NewData newData) {
-                        out.write(newData.ch());
+                        ByteArray byteArray = newData.getRawData();
+                        out.write(byteArray.data(), 0, byteArray.length());
                     }
                     else if (singleChange instanceof Delta.ExistingChunk existingChunk) {
                         int chunkId = existingChunk.id();
