@@ -11,6 +11,6 @@ public class RollingHashTest {
         RollingHash hash = new RollingHash();
 
         byte[] data = "hello world".getBytes(StandardCharsets.UTF_8);
-        assertEquals(32, hash.rollingHash(data, data.length));
+        assertEquals(8520, hash.rollingHash(data, data.length));
     }
 }
