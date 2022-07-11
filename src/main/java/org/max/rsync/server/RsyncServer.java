@@ -3,8 +3,6 @@ package org.max.rsync.server;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.nio.file.DirectoryStream;
@@ -119,19 +117,14 @@ public class RsyncServer {
     private void saveMetaFile(Path outFilePath, FileMeta fileMeta) throws IOException {
         Path metaPath = metaPath(outFilePath);
         Files.createFile(metaPath);
-        try (OutputStream out = Files.newOutputStream(metaPath); ObjectOutputStream objOut = new ObjectOutputStream(out)) {
-            objOut.writeObject(fileMeta);
+        try (OutputStream out = Files.newOutputStream(metaPath)) {
+            FileMeta.writeToStream(fileMeta, out);
         }
     }
 
     private FileMeta readMetaFromFile(Path metaFilePath) throws IOException {
-        try {
-            try (InputStream in = Files.newInputStream(metaFilePath); ObjectInputStream objIn = new ObjectInputStream(in)) {
-                return (FileMeta) objIn.readObject();
-            }
-        }
-        catch (ClassNotFoundException ex) {
-            throw new IllegalStateException(ex);
+        try (InputStream in = Files.newInputStream(metaFilePath)) {
+            return FileMeta.readFromStream(in);
         }
     }
 

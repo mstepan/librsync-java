@@ -1,57 +1,41 @@
 package org.max.rsync.meta;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.Serial;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class FileMeta implements java.io.Externalizable {
+public record FileMeta(List<ChunkMeta> chunkMetas) {
 
-    public static final long serialVersionUID = 2026391092388879077L;
+    public static void writeToStream(FileMeta meta, OutputStream out) throws IOException {
+        try (DataOutputStream dataOut = new DataOutputStream(out)) {
+            dataOut.writeInt(meta.chunkMetas.size());
 
-    private List<ChunkMeta> chunkMetas;
-
-    public FileMeta(){}
-
-    public FileMeta(List<ChunkMeta> chunkMetas) {
-        this.chunkMetas = chunkMetas;
-    }
-
-    public List<ChunkMeta> chunkMetas() {
-        return chunkMetas;
-    }
-
-    @Override
-    public void writeExternal(ObjectOutput out) throws IOException {
-        System.out.println("CUSTOM serialization used");
-
-        out.writeInt(chunkMetas.size());
-
-        for (ChunkMeta singleMeta : chunkMetas) {
-            out.writeInt(singleMeta.id());
-            out.writeInt(singleMeta.rollingHash());
-            out.writeUTF(singleMeta.strongHash());
+            for (ChunkMeta singleMeta : meta.chunkMetas) {
+                dataOut.writeInt(singleMeta.id());
+                dataOut.writeInt(singleMeta.rollingHash());
+                dataOut.writeUTF(singleMeta.strongHash());
+            }
         }
     }
 
-    @Override
-    public void readExternal(ObjectInput in) throws IOException {
-        System.out.println("CUSTOM serialization used");
+    public static FileMeta readFromStream(InputStream in) throws IOException {
+        List<ChunkMeta> chunksMeta = new ArrayList<>();
 
-        chunkMetas = new ArrayList<>();
+        try (DataInputStream dataIn = new DataInputStream(in)) {
+            final int chunksCount = dataIn.readInt();
 
-        final int chunksCount = in.readInt();
+            for (int i = 0; i < chunksCount; ++i) {
+                int id = dataIn.readInt();
+                int rollingHash = dataIn.readInt();
+                String strongHash = dataIn.readUTF();
 
-        for (int i = 0; i < chunksCount; ++i) {
-            int id = in.readInt();
-            int rollingHash = in.readInt();
-            String strongHash = in.readUTF();
-            chunkMetas.add(new ChunkMeta(id, rollingHash, strongHash));
+                chunksMeta.add(new ChunkMeta(id, rollingHash, strongHash));
+            }
         }
+        return new FileMeta(chunksMeta);
     }
-
 }

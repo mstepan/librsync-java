@@ -7,8 +7,8 @@ import java.util.List;
 
 public class MetadataCalculator {
 
-    // TODO: temporary set for 128 bytes, should be something like 1MB
-    public static final int CHUNK_SIZE_IN_BYTES = 128;
+    //TODO: right now 10KB used as chunk size, but in real life something closer to 1MB should be used
+    public static final int CHUNK_SIZE_IN_BYTES = 10 * 1024;
 
     private final RollingHash rollingHash;
     private final StrongHash strongHash;
