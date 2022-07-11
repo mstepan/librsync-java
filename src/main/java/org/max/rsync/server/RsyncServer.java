@@ -1,10 +1,12 @@
 package org.max.rsync.server;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -48,8 +50,43 @@ public class RsyncServer {
 
         Delta delta = diffCalculator.calculateDelta(inFilePath, meta);
 
-        int x = 133;
-        //TODO:
+        reconstructFile(outFilePath, delta);
+
+//        recalculateMeta(outFilePath);
+    }
+
+    private void reconstructFile(Path outFilePath, Delta delta) throws IOException {
+
+        Path tempPath = reconstructedFilePath(outFilePath);
+        Files.createFile(tempPath);
+
+        byte[] buf = new byte[CalculateFileMetadata.CHUNK_SIZE_IN_BYTES];
+
+        try {
+            try (var randomAccessFile = new RandomAccessFile(outFilePath.toFile(), "r");
+                 var out = Files.newOutputStream(tempPath);
+                 var baseFileIn = Files.newInputStream(outFilePath)) {
+
+                for (Delta.DeltaChunk singleChange : delta.getDiff()) {
+                    if (singleChange instanceof Delta.NewData newData) {
+                        out.write(newData.ch());
+                    }
+                    else if (singleChange instanceof Delta.ExistingChunk existingChunk) {
+                        int chunkId = existingChunk.id();
+                        randomAccessFile.seek(((long) chunkId) * CalculateFileMetadata.CHUNK_SIZE_IN_BYTES);
+                        int readBytes = randomAccessFile.read(buf);
+                        out.write(buf, 0, readBytes);
+                    }
+                }
+            }
+            catch (FileNotFoundException ex) {
+                throw new IllegalStateException(ex);
+            }
+        }
+        finally {
+            IOUtils.replaceFile(tempPath, outFilePath);
+//            Files.delete(tempPath);
+        }
     }
 
     public void saveFileWithChecksum(Path inFilePath, Path outFilePath) throws IOException {
@@ -87,6 +124,10 @@ public class RsyncServer {
 
     private Path metaPath(Path filePath) {
         return Path.of(filePath.getParent().toString(), ".meta-" + filePath.getFileName().toString());
+    }
+
+    private Path reconstructedFilePath(Path filePath) {
+        return Path.of(filePath.getParent().toString(), ".reconstructed-" + filePath.getFileName().toString());
     }
 
 }
