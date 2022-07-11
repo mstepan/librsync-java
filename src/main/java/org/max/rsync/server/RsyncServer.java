@@ -43,7 +43,16 @@ public class RsyncServer {
     }
 
     private void updateExistingFile(Path inFilePath, Path outFilePath) throws IOException {
-        System.out.printf("Updating existing file: %s%n", outFilePath.toFile().getName());
+
+        long lastModifiedInFile = inFilePath.toFile().lastModified();
+        long lastModifiedOutFile = outFilePath.toFile().lastModified();
+
+        if( lastModifiedOutFile >= lastModifiedInFile ){
+            System.out.printf("File '%s' is up-to-date, nothing to change%n", outFilePath.toFile().getName());
+            return;
+        }
+
+        System.out.printf("Updating existing file '%s'%n", outFilePath.toFile().getName());
 
         FileMeta meta = readMetaFromFile(metaPath(outFilePath));
 
@@ -101,7 +110,7 @@ public class RsyncServer {
     }
 
     public void saveFileWithChecksum(Path inFilePath, Path outFilePath) throws IOException {
-        System.out.printf("Creating new file %s%n", inFilePath.toFile().getName());
+        System.out.printf("Creating new file '%s'%n", inFilePath.toFile().getName());
 
         // create meta file
         try (InputStream in = Files.newInputStream(inFilePath, StandardOpenOption.READ)) {
