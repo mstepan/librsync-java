@@ -14,14 +14,14 @@ import java.nio.file.StandardOpenOption;
 import org.max.rsync.delta.Delta;
 import org.max.rsync.delta.DiffCalculator;
 import org.max.rsync.io.IOUtils;
-import org.max.rsync.meta.CalculateFileMetadata;
 import org.max.rsync.meta.FileMeta;
+import org.max.rsync.meta.MetadataCalculator;
 import org.max.rsync.meta.RollingHash;
 import org.max.rsync.meta.Sha256Hash;
 
 public class RsyncServer {
 
-    private final CalculateFileMetadata metadataCalculator = new CalculateFileMetadata(new RollingHash(), new Sha256Hash());
+    private final MetadataCalculator metadataCalculator = new MetadataCalculator(new RollingHash(), new Sha256Hash());
 
     private final DiffCalculator diffCalculator = new DiffCalculator(new RollingHash(), new Sha256Hash());
 
@@ -52,7 +52,19 @@ public class RsyncServer {
 
         reconstructFile(outFilePath, delta);
 
-//        recalculateMeta(outFilePath);
+        recalculateMeta(outFilePath);
+    }
+
+    private void recalculateMeta(Path outFilePath) throws IOException {
+        FileMeta newMeta;
+
+        try (InputStream in = Files.newInputStream(outFilePath)) {
+            newMeta = metadataCalculator.calculate(in);
+        }
+
+        Path metaPath = metaPath(outFilePath);
+        Files.delete(metaPath);
+        saveMetaFile(outFilePath, newMeta);
     }
 
     private void reconstructFile(Path outFilePath, Delta delta) throws IOException {
@@ -60,7 +72,7 @@ public class RsyncServer {
         Path tempPath = reconstructedFilePath(outFilePath);
         Files.createFile(tempPath);
 
-        byte[] buf = new byte[CalculateFileMetadata.CHUNK_SIZE_IN_BYTES];
+        byte[] buf = new byte[MetadataCalculator.CHUNK_SIZE_IN_BYTES];
 
         try {
             try (var randomAccessFile = new RandomAccessFile(outFilePath.toFile(), "r");
@@ -73,7 +85,7 @@ public class RsyncServer {
                     }
                     else if (singleChange instanceof Delta.ExistingChunk existingChunk) {
                         int chunkId = existingChunk.id();
-                        randomAccessFile.seek(((long) chunkId) * CalculateFileMetadata.CHUNK_SIZE_IN_BYTES);
+                        randomAccessFile.seek(((long) chunkId) * MetadataCalculator.CHUNK_SIZE_IN_BYTES);
                         int readBytes = randomAccessFile.read(buf);
                         out.write(buf, 0, readBytes);
                     }

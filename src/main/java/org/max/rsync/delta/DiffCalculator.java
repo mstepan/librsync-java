@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import org.max.rsync.meta.CalculateFileMetadata;
+import org.max.rsync.meta.MetadataCalculator;
 import org.max.rsync.meta.ChunkMeta;
 import org.max.rsync.meta.FileMeta;
 import org.max.rsync.meta.RollingHash;
@@ -28,7 +28,7 @@ public class DiffCalculator {
 
         Map<Integer, ChunkMeta> hashes = createMapOfHashes(meta);
 
-        final byte[] window = new byte[CalculateFileMetadata.CHUNK_SIZE_IN_BYTES];
+        final byte[] window = new byte[MetadataCalculator.CHUNK_SIZE_IN_BYTES];
 
         final Delta delta = new Delta();
 

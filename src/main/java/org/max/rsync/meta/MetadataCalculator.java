@@ -5,12 +5,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CalculateFileMetadata {
+public class MetadataCalculator {
 
     private final RollingHash rollingHash;
     private final Sha256Hash sha256Hash;
 
-    public CalculateFileMetadata(RollingHash rollingHash, Sha256Hash sha256Hash) {
+    public MetadataCalculator(RollingHash rollingHash, Sha256Hash sha256Hash) {
         this.rollingHash = rollingHash;
         this.sha256Hash = sha256Hash;
     }
