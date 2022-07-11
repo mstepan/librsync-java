@@ -3,12 +3,10 @@ package org.max.rsync.delta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Delta {
+public record Delta(List<DeltaChunk> diff) {
 
-    private final List<DeltaChunk> diff = new ArrayList<>();
-
-    public List<DeltaChunk> getDiff() {
-        return diff;
+    Delta(){
+        this(new ArrayList<>());
     }
 
     public void addNewByte(byte newByte) {

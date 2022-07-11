@@ -79,7 +79,7 @@ public class RsyncServer {
                  var out = Files.newOutputStream(tempPath);
                  var baseFileIn = Files.newInputStream(outFilePath)) {
 
-                for (Delta.DeltaChunk singleChange : delta.getDiff()) {
+                for (Delta.DeltaChunk singleChange : delta.diff()) {
                     if (singleChange instanceof Delta.NewData newData) {
                         out.write(newData.ch());
                     }
