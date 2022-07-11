@@ -29,6 +29,9 @@ public final class ByteArray {
         return length;
     }
 
+    /**
+     * Increase array for 50%.
+     */
     private void resize() {
         data = Arrays.copyOf(data, data.length + (data.length >> 1));
     }

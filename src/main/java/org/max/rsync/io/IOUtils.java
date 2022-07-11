@@ -11,11 +11,11 @@ import java.nio.file.StandardOpenOption;
 public final class IOUtils {
 
     private IOUtils() {
-        throw new AssertionError("Can't instantiate utility-only class 'IOUtils'");
+        throw new AssertionError("Can't instantiate utility-only class");
     }
 
     public static void replaceFile(Path srcPath, Path destPath) throws IOException {
-        Files.move(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING);
+        Files.move(srcPath, destPath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
     }
 
     public static void copyData(Path inFilePath, Path outFilePath) throws IOException {

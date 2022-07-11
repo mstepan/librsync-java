@@ -3,26 +3,28 @@ package org.max.rsync.delta;
 import java.util.ArrayList;
 import java.util.List;
 
-public record Delta(List<DeltaChunk> diff) {
+public final class Delta {
 
-    Delta() {
-        this(new ArrayList<>());
+    private final List<DeltaChunk> diff = new ArrayList<>();
+    private DeltaChunk lastAddedChunk;
+
+    public List<DeltaChunk> diff() {
+        return diff;
     }
 
     public void addNewByte(byte newByte) {
-
-        DeltaChunk lastChunk = (diff.isEmpty()) ? null : diff.get(diff.size() - 1);
-
-        if( lastChunk instanceof NewData newData){
+        if (lastAddedChunk instanceof NewData newData) {
             newData.append(newByte);
         }
         else {
-            diff.add(new NewData(newByte));
+            lastAddedChunk = new NewData(newByte);
+            diff.add(lastAddedChunk);
         }
     }
 
     public void addExistingChunk(int chunkId) {
-        diff.add(new ExistingChunk(chunkId));
+        lastAddedChunk = new ExistingChunk(chunkId);
+        diff.add(lastAddedChunk);
     }
 
 
@@ -44,7 +46,7 @@ public record Delta(List<DeltaChunk> diff) {
             return rawData;
         }
 
-        void append(byte newByte){
+        void append(byte newByte) {
             rawData.append(newByte);
         }
 
