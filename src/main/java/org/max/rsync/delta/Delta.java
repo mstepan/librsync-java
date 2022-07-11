@@ -2,6 +2,7 @@ package org.max.rsync.delta;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.max.rsync.io.ByteArray;
 
 public final class Delta {
 

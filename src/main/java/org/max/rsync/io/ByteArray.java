@@ -1,4 +1,4 @@
-package org.max.rsync.delta;
+package org.max.rsync.io;
 
 
 import java.util.Arrays;

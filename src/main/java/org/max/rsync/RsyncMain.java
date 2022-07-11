@@ -19,8 +19,8 @@ public class RsyncMain {
         Path outFolder = Path.of(args[1]);
 
         System.out.println("Rsync called for 2 folders: ");
-        System.out.println("src: " + inFolder);
-        System.out.println("dest: " + outFolder);
+        System.out.println("src ==> " + inFolder);
+        System.out.println("dest ==> " + outFolder);
 
         RsyncServer rsync = new RsyncServer();
         rsync.sync(inFolder, outFolder);

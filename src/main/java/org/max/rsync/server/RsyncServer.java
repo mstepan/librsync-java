@@ -9,9 +9,9 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import org.max.rsync.delta.ByteArray;
+import org.max.rsync.io.ByteArray;
 import org.max.rsync.delta.Delta;
-import org.max.rsync.delta.DiffCalculator;
+import org.max.rsync.delta.DeltaCalculator;
 import org.max.rsync.io.IOUtils;
 import org.max.rsync.meta.FileMeta;
 import org.max.rsync.meta.MetadataCalculator;
@@ -22,7 +22,7 @@ public class RsyncServer {
 
     private final MetadataCalculator metadataCalculator = new MetadataCalculator(new RollingHash(), new StrongHash());
 
-    private final DiffCalculator diffCalculator = new DiffCalculator(new RollingHash(), new StrongHash());
+    private final DeltaCalculator deltaCalculator = new DeltaCalculator(new RollingHash(), new StrongHash());
 
     public void sync(Path inFolder, Path outFolder) throws IOException {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(inFolder)) {
@@ -47,7 +47,7 @@ public class RsyncServer {
 
         FileMeta meta = readMetaFromFile(metaPath(outFilePath));
 
-        Delta delta = diffCalculator.calculateDelta(inFilePath, meta);
+        Delta delta = deltaCalculator.calculateDelta(inFilePath, meta);
 
         reconstructFile(outFilePath, delta);
 

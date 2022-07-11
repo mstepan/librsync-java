@@ -13,12 +13,12 @@ import org.max.rsync.meta.FileMeta;
 import org.max.rsync.meta.RollingHash;
 import org.max.rsync.meta.StrongHash;
 
-public class DiffCalculator {
+public class DeltaCalculator {
 
     private final RollingHash rollingHashCalculator;
     private final StrongHash strongHashCalculator;
 
-    public DiffCalculator(RollingHash rollingHashCalculator, StrongHash strongHashCalculator) {
+    public DeltaCalculator(RollingHash rollingHashCalculator, StrongHash strongHashCalculator) {
         this.rollingHashCalculator = Objects.requireNonNull(rollingHashCalculator);
         this.strongHashCalculator = Objects.requireNonNull(strongHashCalculator);
     }
