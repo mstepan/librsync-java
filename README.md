@@ -18,6 +18,16 @@ Execute `rsync` functionality for 2 local folders:
 java -jar target/librsync-java-0.0.1-SNAPSHOT.jar sync-in sync-out
 ```
 
+To check that you files are the same use [difft](https://github.com/Wilfred/difftastic)
+```
+difft sync-in/war-and-peace.txt sync-out/war-and-peace.txt 
+```
+<== 
+```
+sync-out/war-and-peace.txt --- Text
+No changes.
+```
+
 ## Running unit tests.
 
 ```

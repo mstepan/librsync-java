@@ -53,7 +53,8 @@ public class DiffCalculator {
                     if (shiftRightOneByte(in, window)) {
                         byte rightmostByte = window[window.length - 1];
                         // recalculate rolling hash
-                        curRollingHash = rollingHashCalculator.recalculate(curRollingHash, leftmostByte, rightmostByte);
+                        curRollingHash = rollingHashCalculator.recalculate(curRollingHash, leftmostByte, readBytes,
+                                                                           rightmostByte);
 
                     }
                     else {
