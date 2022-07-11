@@ -7,6 +7,9 @@ import java.util.List;
 
 public class MetadataCalculator {
 
+    // TODO: temporary set for 128 bytes, should be something like 1MB
+    public static final int CHUNK_SIZE_IN_BYTES = 128;
+
     private final RollingHash rollingHash;
     private final Sha256Hash sha256Hash;
 
@@ -14,9 +17,6 @@ public class MetadataCalculator {
         this.rollingHash = rollingHash;
         this.sha256Hash = sha256Hash;
     }
-
-    // TODO: temporary set for 128 bytes, should be something like 1MB
-    public static final int CHUNK_SIZE_IN_BYTES = 10;
 
     public FileMeta calculate(InputStream in) {
 

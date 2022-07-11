@@ -30,3 +30,5 @@ hs_err_pid*
 # ignore sync-out folder
 sync-out/*
 
+# Ignore maven shade plugin build time files
+dependency-reduced-pom.xml

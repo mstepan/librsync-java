@@ -42,8 +42,6 @@ public class DiffCalculator {
             while (true) {
                 int existingChunkId = findChunkIdByChecksum(hashes, curRollingHash, window, readBytes);
 
-                String windowTemp = toCharStr(window, readBytes);
-
                 // chunk not found
                 if (existingChunkId == -1) {
 
@@ -79,21 +77,6 @@ public class DiffCalculator {
         }
 
         return delta;
-    }
-
-    /**
-     * Temp function to simplify debugging.
-     */
-    private String toCharStr(byte[] window, int length) {
-
-        StringBuilder buf = new StringBuilder(length);
-
-        for (int i = 0; i < length; ++i) {
-            buf.append((char) window[i]);
-        }
-
-        return buf.toString();
-
     }
 
     private boolean shiftRightOneByte(InputStream in, byte[] window) throws IOException {

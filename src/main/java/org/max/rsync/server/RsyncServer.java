@@ -97,7 +97,6 @@ public class RsyncServer {
         }
         finally {
             IOUtils.replaceFile(tempPath, outFilePath);
-//            Files.delete(tempPath);
         }
     }
 
