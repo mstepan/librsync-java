@@ -10,7 +10,6 @@ import org.max.rsync.server.RsyncServer;
 public class RsyncMain {
 
     public static void main(String[] args) throws Exception {
-
         if (args.length < 2) {
             System.out.println("rsync should be called with 2 parameters: rsync <src-folder> <dest-folder>");
         }
